@@ -1,20 +1,54 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<Shell
-    x:Class="FinanControl.App.AppShell"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:FinanControl.App"
-    Title="FinanControl.App">
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:views="clr-namespace:FinanControl.App.Views"
+       x:Class="FinanControl.App.AppShell"
+       Title="FinanControl"
+       FlyoutBehavior="Disabled">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <Shell.Resources>
+        <ResourceDictionary>
+            <Style x:Key="BaseStyle" TargetType="Element">
+                <Setter Property="Shell.BackgroundColor" Value="{StaticResource Primary}" />
+                <Setter Property="Shell.ForegroundColor" Value="White" />
+                <Setter Property="Shell.TitleColor" Value="White" />
+                <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
+                <Setter Property="Shell.UnselectedColor" Value="#95FFFFFF" />
+                <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource Primary}" />
+                <Setter Property="Shell.TabBarForegroundColor" Value="White" />
+                <Setter Property="Shell.TabBarUnselectedColor" Value="#95FFFFFF" />
+                <Setter Property="Shell.TabBarTitleColor" Value="White" />
+            </Style>
+            <Style TargetType="TabBar" BasedOn="{StaticResource BaseStyle}" />
+            <Style TargetType="FlyoutItem" BasedOn="{StaticResource BaseStyle}" />
+        </ResourceDictionary>
+    </Shell.Resources>
 
-    <ShellContent
-    Title="Contas"
-    Icon="account_balance.png"
-    ContentTemplate="{DataTemplate views:ContasPage}"
-    Route="ContasPage" />
+    <TabBar>
+        <ShellContent Title="Dashboard" 
+                      Icon="dashboard.png"
+                      ContentTemplate="{DataTemplate views:DashboardPage}"
+                      Route="DashboardPage" />
+
+        <ShellContent Title="Contas" 
+                      Icon="account_balance.png"
+                      ContentTemplate="{DataTemplate views:ContasPage}"
+                      Route="ContasPage" />
+
+        <ShellContent Title="Transações" 
+                      Icon="payments.png"
+                      ContentTemplate="{DataTemplate views:TransacoesPage}"
+                      Route="TransacoesPage" />
+
+        <ShellContent Title="Categorias" 
+                      Icon="category.png"
+                      ContentTemplate="{DataTemplate views:CategoriasPage}"
+                      Route="CategoriasPage" />
+
+        <ShellContent Title="Rendas" 
+                      Icon="trending_up.png"
+                      ContentTemplate="{DataTemplate views:FontesRendaPage}"
+                      Route="FontesRendaPage" />
+    </TabBar>
 
 </Shell>

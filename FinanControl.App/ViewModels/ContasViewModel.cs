@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+using FinanControl.App.Services;
 using FinanControl.Core.Entities;
 using FinanControl.Core.Enums;
 using FinanControl.Infra.Data.Interfaces;
