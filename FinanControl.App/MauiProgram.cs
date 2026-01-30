@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using FinanControl.App.Converters;
+using FinanControl.App.ViewModels;
+using FinanControl.App.Views;
+using Microsoft.Extensions.Logging;
 
 namespace FinanControl.App
 {
@@ -15,8 +18,13 @@ namespace FinanControl.App
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            builder.Services.AddSingleton<ContasViewModel>();
+            builder.Services.AddSingleton<ContasPage>();
+
+            builder.Services.AddSingleton<NotNullToBoolConverter>();
+
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();

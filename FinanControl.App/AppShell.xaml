@@ -11,4 +11,10 @@
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 
+    <ShellContent
+    Title="Contas"
+    Icon="account_balance.png"
+    ContentTemplate="{DataTemplate views:ContasPage}"
+    Route="ContasPage" />
+
 </Shell>

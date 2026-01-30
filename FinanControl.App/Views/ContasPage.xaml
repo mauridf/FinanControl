@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FinanControl.App.Views.ContasPage"
+             Title="Minhas Contas"
+             xmlns:viewmodel="clr-namespace:FinanControl.App.ViewModels"
+             x:DataType="viewmodel:ContasViewModel"
+             xmlns:enums="clr-namespace:FinanControl.Core.Enums;assembly=FinanControl.Core">
+
+    <ContentPage.BindingContext>
+        <viewmodel:ContasViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="Auto, *, Auto" 
+          ColumnDefinitions="*"
+          Padding="20"
+          RowSpacing="15">
+
+        <!-- Formulário -->
+        <Frame Grid.Row="0"
+               BorderColor="{StaticResource Primary}"
+               CornerRadius="10"
+               Padding="15">
+            <Grid ColumnDefinitions="*, *"
+                  RowDefinitions="Auto, Auto, Auto, Auto"
+                  ColumnSpacing="10"
+                  RowSpacing="10">
+
+                <Label Grid.Row="0" Grid.Column="0"
+                       Text="Nome da Conta:"
+                       VerticalOptions="Center"/>
+                <Entry Grid.Row="0" Grid.Column="1"
+                       Text="{Binding Nome}"
+                       Placeholder="Ex: Conta Corrente"
+                       ClearButtonVisibility="WhileEditing"/>
+
+                <Label Grid.Row="1" Grid.Column="0"
+                       Text="Instituição:"
+                       VerticalOptions="Center"/>
+                <Entry Grid.Row="1" Grid.Column="1"
+                       Text="{Binding Instituicao}"
+                       Placeholder="Ex: Banco X"
+                       ClearButtonVisibility="WhileEditing"/>
+
+                <Label Grid.Row="2" Grid.Column="0"
+                       Text="Tipo:"
+                       VerticalOptions="Center"/>
+                <Picker Grid.Row="2" Grid.Column="1"
+                        ItemsSource="{Binding TiposConta}"
+                        SelectedItem="{Binding Tipo}"
+                        Title="Selecione o tipo"/>
+
+                <Label Grid.Row="3" Grid.Column="0"
+                       Text="Saldo Inicial:"
+                       VerticalOptions="Center"/>
+                <Entry Grid.Row="3" Grid.Column="1"
+                       Text="{Binding SaldoInicial, StringFormat='{0:F2}'}"
+                       Placeholder="0,00"
+                       Keyboard="Numeric"
+                       ClearButtonVisibility="WhileEditing"/>
+
+            </Grid>
+        </Frame>
+
+        <!-- Lista de Contas -->
+        <Frame Grid.Row="1"
+               BorderColor="{StaticResource Secondary}"
+               CornerRadius="10"
+               Padding="0">
+            <Grid>
+                <RefreshView IsRefreshing="{Binding IsBusy}"
+                             Command="{Binding CarregarContasCommand}"
+                             Grid.Row="0">
+                    <CollectionView ItemsSource="{Binding Contas}"
+                                    SelectionMode="Single"
+                                    SelectedItem="{Binding ContaSelecionada}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame Padding="15"
+                                       Margin="5"
+                                       CornerRadius="8"
+                                       BackgroundColor="{StaticResource Secondary}">
+                                    <Grid ColumnDefinitions="*, Auto"
+                                          RowDefinitions="Auto, Auto">
+
+                                        <Label Grid.Row="0" Grid.Column="0"
+                                               Text="{Binding Nome}"
+                                               FontSize="16"
+                                               FontAttributes="Bold"
+                                               TextColor="White"/>
+
+                                        <Label Grid.Row="1" Grid.Column="0"
+                                               Text="{Binding Instituicao}"
+                                               FontSize="14"
+                                               TextColor="White"/>
+
+                                        <Label Grid.Row="0" Grid.Column="1"
+                                               Text="{Binding Tipo}"
+                                               FontSize="14"
+                                               HorizontalOptions="End"
+                                               TextColor="White"/>
+
+                                        <Label Grid.Row="1" Grid.Column="1"
+                                               Text="{Binding SaldoAtual, StringFormat='R$ {0:F2}'}"
+                                               FontSize="16"
+                                               FontAttributes="Bold"
+                                               HorizontalOptions="End"
+                                               TextColor="White"/>
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+
+                        <CollectionView.EmptyView>
+                            <StackLayout HorizontalOptions="Center"
+                                         VerticalOptions="Center"
+                                         Padding="40">
+                                <Label Text="Nenhuma conta cadastrada"
+                                       HorizontalOptions="Center"
+                                       FontSize="16"
+                                       TextColor="Gray"/>
+                                <Label Text="Adicione sua primeira conta usando o formulário acima"
+                                       HorizontalOptions="Center"
+                                       FontSize="14"
+                                       TextColor="Gray"/>
+                            </StackLayout>
+                        </CollectionView.EmptyView>
+                    </CollectionView>
+                </RefreshView>
+            </Grid>
+        </Frame>
+
+        <!-- Botões -->
+        <Grid Grid.Row="2"
+              ColumnDefinitions="*, *, *, *"
+              ColumnSpacing="10">
+
+            <Button Grid.Column="0"
+                    Text="Novo"
+                    Command="{Binding NovoCommand}"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White"/>
+
+            <Button Grid.Column="1"
+                    Text="Salvar"
+                    Command="{Binding SalvarCommand}"
+                    BackgroundColor="{StaticResource Success}"
+                    TextColor="White"
+                    IsEnabled="{Binding IsNotBusy}"/>
+
+            <Button Grid.Column="2"
+                    Text="Editar"
+                    Command="{Binding EditarCommand}"
+                    BackgroundColor="{StaticResource Warning}"
+                    TextColor="White"
+                    IsEnabled="{Binding ContaSelecionada, Converter={StaticResource NotNullToBoolConverter}}"/>
+
+            <Button Grid.Column="3"
+                    Text="Excluir"
+                    Command="{Binding ExcluirCommand}"
+                    BackgroundColor="{StaticResource Danger}"
+                    TextColor="White"
+                    IsEnabled="{Binding ContaSelecionada, Converter={StaticResource NotNullToBoolConverter}}"/>
+
+        </Grid>
+
+    </Grid>
+</ContentPage>
