@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="FinanControl.App/FinanControl.App.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
+  <Project Path="FinanControl.Core/FinanControl.Core.csproj" />
+  <Project Path="FinanControl.Infra.Data/FinanControl.Infra.Data.csproj" />
+</Solution>
