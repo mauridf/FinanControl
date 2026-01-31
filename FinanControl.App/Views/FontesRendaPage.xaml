@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FinanControl.App.Views.FontesRendaPage"
+             Title="Fontes de Renda"
+             xmlns:viewmodel="clr-namespace:FinanControl.App.ViewModels"
+             x:DataType="viewmodel:FontesRendaViewModel"
+             xmlns:converters="clr-namespace:FinanControl.App.Converters">
+
+    <ContentPage.BindingContext>
+        <viewmodel:FontesRendaViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <converters:NotNullToBoolConverter x:Key="NotNullToBoolConverter" />
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto, *, Auto" 
+          ColumnDefinitions="*"
+          Padding="20"
+          RowSpacing="15">
+
+        <!-- Formulário -->
+        <Frame Grid.Row="0"
+               BorderColor="{StaticResource Primary}"
+               CornerRadius="10"
+               Padding="15"
+               HasShadow="True">
+            <Grid ColumnDefinitions="*, *" 
+                  RowDefinitions="Auto, Auto, Auto, Auto, Auto"
+                  ColumnSpacing="10"
+                  RowSpacing="10">
+
+                <Label Grid.Row="0" Grid.Column="0"
+                       Text="Nome:*"
+                       VerticalOptions="Center"
+                       FontSize="14"/>
+                <Entry Grid.Row="0" Grid.Column="1"
+                       Text="{Binding Nome}"
+                       Placeholder="Ex: Salário"
+                       ClearButtonVisibility="WhileEditing"/>
+
+                <Label Grid.Row="1" Grid.Column="0"
+                       Text="Tipo:*"
+                       VerticalOptions="Center"
+                       FontSize="14"/>
+                <Picker Grid.Row="1" Grid.Column="1"
+                        ItemsSource="{Binding TiposRenda}"
+                        SelectedItem="{Binding Tipo}"
+                        Title="Selecione o tipo"/>
+
+                <Label Grid.Row="2" Grid.Column="0"
+                       Text="Valor Estimado:*"
+                       VerticalOptions="Center"
+                       FontSize="14"/>
+                <Entry Grid.Row="2" Grid.Column="1"
+                       Text="{Binding ValorEstimado, StringFormat='{0:F2}'}"
+                       Placeholder="0,00"
+                       Keyboard="Numeric"
+                       ClearButtonVisibility="WhileEditing"/>
+
+                <Label Grid.Row="3" Grid.Column="0"
+                       Text="Frequência:*"
+                       VerticalOptions="Center"
+                       FontSize="14"/>
+                <Picker Grid.Row="3" Grid.Column="1"
+                        ItemsSource="{Binding FrequenciasRenda}"
+                        SelectedItem="{Binding Frequencia}"
+                        Title="Selecione a frequência"/>
+
+                <Label Grid.Row="4" Grid.Column="0"
+                       Text="Descrição:"
+                       VerticalOptions="Center"
+                       FontSize="14"/>
+                <Entry Grid.Row="4" Grid.Column="1"
+                       Text="{Binding Descricao}"
+                       Placeholder="Descrição opcional"
+                       ClearButtonVisibility="WhileEditing"/>
+
+            </Grid>
+        </Frame>
+
+        <!-- Lista de Fontes de Renda -->
+        <Frame Grid.Row="1"
+               BorderColor="{StaticResource Secondary}"
+               CornerRadius="10"
+               Padding="0"
+               HasShadow="True">
+            <RefreshView IsRefreshing="{Binding IsBusy}"
+                         Command="{Binding CarregarFontesRendaCommand}">
+                <CollectionView ItemsSource="{Binding FontesRenda}"
+                                SelectionMode="Single"
+                                SelectedItem="{Binding FonteRendaSelecionada}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Padding="15"
+                                   Margin="5"
+                                   CornerRadius="8"
+                                   BackgroundColor="{StaticResource Success}">
+                                <Grid ColumnDefinitions="*, Auto"
+                                      RowDefinitions="Auto, Auto, Auto">
+
+                                    <Label Grid.Row="0" Grid.Column="0"
+                                           Text="{Binding Nome}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="White"/>
+
+                                    <Label Grid.Row="1" Grid.Column="0"
+                                           Text="{Binding Descricao}"
+                                           FontSize="12"
+                                           TextColor="White"/>
+
+                                    <Label Grid.Row="2" Grid.Column="0"
+                                           Text="{Binding Tipo}"
+                                           FontSize="12"
+                                           TextColor="White"/>
+
+                                    <Label Grid.Row="0" Grid.Column="1"
+                                           Text="{Binding ValorEstimado, StringFormat='R$ {0:F2}'}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           HorizontalOptions="End"
+                                           TextColor="White"/>
+
+                                    <Label Grid.Row="1" Grid.Column="1"
+                                           Text="{Binding Frequencia}"
+                                           FontSize="12"
+                                           HorizontalOptions="End"
+                                           TextColor="White"/>
+
+                                    <Label Grid.Row="2" Grid.Column="1"
+                                           Text="{Binding DataInicio, StringFormat='Início: {0:dd/MM/yyyy}'}"
+                                           FontSize="11"
+                                           HorizontalOptions="End"
+                                           TextColor="White"/>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
+                    <CollectionView.EmptyView>
+                        <StackLayout HorizontalOptions="Center"
+                                     VerticalOptions="Center"
+                                     Padding="40">
+                            <Label Text="Nenhuma fonte de renda cadastrada"
+                                   HorizontalOptions="Center"
+                                   FontSize="16"
+                                   TextColor="{StaticResource MediumGray}"/>
+                            <Label Text="Adicione sua primeira fonte de renda usando o formulário acima"
+                                   HorizontalOptions="Center"
+                                   FontSize="14"
+                                   TextColor="{StaticResource MediumGray}"/>
+                        </StackLayout>
+                    </CollectionView.EmptyView>
+                </CollectionView>
+            </RefreshView>
+        </Frame>
+
+        <!-- Botões -->
+        <Grid Grid.Row="2"
+              ColumnDefinitions="*, *, *, *"
+              ColumnSpacing="10">
+
+            <Button Grid.Column="0"
+                    Text="Novo"
+                    Command="{Binding NovoCommand}"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White"/>
+
+            <Button Grid.Column="1"
+                    Text="Salvar"
+                    Command="{Binding SalvarCommand}"
+                    BackgroundColor="{StaticResource Success}"
+                    TextColor="White"
+                    IsEnabled="{Binding IsNotBusy}"/>
+
+            <Button Grid.Column="2"
+                    Text="Editar"
+                    Command="{Binding EditarCommand}"
+                    BackgroundColor="{StaticResource Warning}"
+                    TextColor="White"
+                    IsEnabled="{Binding FonteRendaSelecionada, Converter={StaticResource NotNullToBoolConverter}}"/>
+
+            <Button Grid.Column="3"
+                    Text="Excluir"
+                    Command="{Binding ExcluirCommand}"
+                    BackgroundColor="{StaticResource Danger}"
+                    TextColor="White"
+                    IsEnabled="{Binding FonteRendaSelecionada, Converter={StaticResource NotNullToBoolConverter}}"/>
+
+        </Grid>
+
+        <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                          IsVisible="{Binding IsBusy}"
+                          Color="{StaticResource Primary}"
+                          Grid.RowSpan="3"
+                          HorizontalOptions="Center"
+                          VerticalOptions="Center"/>
+
+    </Grid>
+</ContentPage>

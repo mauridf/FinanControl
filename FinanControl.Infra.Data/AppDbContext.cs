@@ -1,4 +1,6 @@
-﻿using FinanControl.Core.Entities;
+﻿using System;
+using System.IO;
+using FinanControl.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinanControl.Infra.Data
@@ -19,7 +21,22 @@ namespace FinanControl.Infra.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var databasePath = Path.Combine(FileSystem.AppDataDirectory, "financontrol.db");
+                // Obtém um diretório de dados apropriado sem depender de `FileSystem`
+                var appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                if (string.IsNullOrWhiteSpace(appDataDir))
+                {
+                    appDataDir = AppContext.BaseDirectory ?? Directory.GetCurrentDirectory();
+                }
+
+                var databasePath = Path.Combine(appDataDir, "financontrol.db");
+
+                // Garante que o diretório exista
+                var directory = Path.GetDirectoryName(databasePath);
+                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
                 optionsBuilder.UseSqlite($"Filename={databasePath}");
             }
         }

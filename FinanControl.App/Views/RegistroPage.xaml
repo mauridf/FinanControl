@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FinanControl.App.Views.RegistroPage"
+             Title="FinanControl - Registro"
+             xmlns:viewmodel="clr-namespace:FinanControl.App.ViewModels"
+             x:DataType="viewmodel:RegistroViewModel">
+
+    <ContentPage.BindingContext>
+        <viewmodel:RegistroViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="15" Padding="20">
+
+            <Label Text="Criar Conta"
+                   FontSize="24"
+                   HorizontalOptions="Center"
+                   TextColor="{StaticResource Primary}"
+                   FontAttributes="Bold"
+                   Margin="0,0,0,10" />
+
+            <Frame Padding="20" 
+                   CornerRadius="10" 
+                   BackgroundColor="{StaticResource LightGray}"
+                   HasShadow="True">
+                <VerticalStackLayout Spacing="12">
+
+                    <Label Text="Nome Completo*"
+                           FontSize="14"
+                           TextColor="{StaticResource DarkGray}" />
+                    <Entry Placeholder="Digite seu nome completo"
+                           Text="{Binding Nome}"
+                           ClearButtonVisibility="WhileEditing" />
+
+                    <Label Text="Email*"
+                           FontSize="14"
+                           TextColor="{StaticResource DarkGray}" />
+                    <Entry Placeholder="seu@email.com"
+                           Keyboard="Email"
+                           Text="{Binding Email}"
+                           ClearButtonVisibility="WhileEditing" />
+
+                    <Label Text="Telefone"
+                           FontSize="14"
+                           TextColor="{StaticResource DarkGray}" />
+                    <Entry Placeholder="(11) 99999-9999"
+                           Keyboard="Telephone"
+                           Text="{Binding Telefone}"
+                           ClearButtonVisibility="WhileEditing" />
+
+                    <Label Text="Data de Nascimento"
+                           FontSize="14"
+                           TextColor="{StaticResource DarkGray}" />
+                    <DatePicker Date="{Binding DataNascimento}"
+                               Format="dd/MM/yyyy"
+                               MaximumDate="{Binding TodayDate}" />
+
+                    <Label Text="Endereço"
+                           FontSize="14"
+                           TextColor="{StaticResource DarkGray}" />
+                    <Entry Placeholder="Digite seu endereço"
+                           Text="{Binding Endereco}"
+                           ClearButtonVisibility="WhileEditing" />
+
+                    <Label Text="Senha* (mínimo 6 caracteres)"
+                           FontSize="14"
+                           TextColor="{StaticResource DarkGray}" />
+                    <Entry Placeholder="Digite sua senha"
+                           IsPassword="True"
+                           Text="{Binding Senha}"
+                           ClearButtonVisibility="WhileEditing" />
+
+                    <Label Text="Confirmar Senha*"
+                           FontSize="14"
+                           TextColor="{StaticResource DarkGray}" />
+                    <Entry Placeholder="Confirme sua senha"
+                           IsPassword="True"
+                           Text="{Binding ConfirmarSenha}"
+                           ClearButtonVisibility="WhileEditing" />
+
+                    <Grid ColumnDefinitions="*, *" ColumnSpacing="10" Margin="0,15,0,0">
+                        <Button Grid.Column="0"
+                                Text="Voltar"
+                                Command="{Binding VoltarCommand}"
+                                IsEnabled="{Binding IsNotBusy}"
+                                BackgroundColor="{StaticResource MediumGray}"
+                                TextColor="White" />
+
+                        <Button Grid.Column="1"
+                                Text="Cadastrar"
+                                Command="{Binding RegistrarCommand}"
+                                IsEnabled="{Binding IsNotBusy}"
+                                BackgroundColor="{StaticResource Primary}"
+                                TextColor="White" />
+                    </Grid>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                              IsVisible="{Binding IsBusy}"
+                              Color="{StaticResource Primary}"
+                              HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

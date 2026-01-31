@@ -1,4 +1,5 @@
-﻿using FinanControl.App.Services;
+﻿using FinanControl.App.Converters;
+using FinanControl.App.Services;
 using FinanControl.App.ViewModels;
 using FinanControl.App.Views;
 using FinanControl.Core.Entities;
@@ -58,8 +59,12 @@ public static class MauiProgram
         builder.Services.AddSingleton<TransacoesPage>();
 
         // Registrar conversores
-        builder.Services.AddSingleton<Converters.NotNullToBoolConverter>();
-        builder.Services.AddSingleton<Converters.TipoTransacaoToColorConverter>();
+        builder.Services.AddSingleton<NotNullToBoolConverter>();
+        builder.Services.AddSingleton<TipoTransacaoToColorConverter>();
+        builder.Services.AddSingleton<SaldoToColorConverter>();
+        builder.Services.AddSingleton<SaldoToStatusConverter>();
+        builder.Services.AddSingleton<BoolToColorConverter>();
+        builder.Services.AddSingleton<BoolToStatusConverter>();
 
         return builder.Build();
     }

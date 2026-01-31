@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FinanControl.App.Views.CategoriasPage"
+             Title="Categorias"
+             xmlns:viewmodel="clr-namespace:FinanControl.App.ViewModels"
+             x:DataType="viewmodel:CategoriasViewModel"
+             xmlns:converters="clr-namespace:FinanControl.App.Converters">
+
+    <ContentPage.BindingContext>
+        <viewmodel:CategoriasViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <converters:NotNullToBoolConverter x:Key="NotNullToBoolConverter" />
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto, *, Auto" 
+          ColumnDefinitions="*"
+          Padding="20"
+          RowSpacing="15">
+
+        <!-- Formulário -->
+        <Frame Grid.Row="0"
+               BorderColor="{StaticResource Primary}"
+               CornerRadius="10"
+               Padding="15"
+               HasShadow="True">
+            <VerticalStackLayout Spacing="10">
+                <Grid ColumnDefinitions="*, *" 
+                      RowDefinitions="Auto, Auto, Auto, Auto"
+                      ColumnSpacing="10"
+                      RowSpacing="10">
+
+                    <Label Grid.Row="0" Grid.Column="0"
+                           Text="Nome:*"
+                           VerticalOptions="Center"
+                           FontSize="14"/>
+                    <Entry Grid.Row="0" Grid.Column="1"
+                           Text="{Binding Nome}"
+                           Placeholder="Ex: Alimentação"
+                           ClearButtonVisibility="WhileEditing"/>
+
+                    <Label Grid.Row="1" Grid.Column="0"
+                           Text="Tipo:*"
+                           VerticalOptions="Center"
+                           FontSize="14"/>
+                    <Picker Grid.Row="1" Grid.Column="1"
+                            ItemsSource="{Binding TiposTransacao}"
+                            SelectedItem="{Binding Tipo}"
+                            Title="Selecione o tipo"/>
+
+                    <Label Grid.Row="2" Grid.Column="0"
+                           Text="Cor:"
+                           VerticalOptions="Center"
+                           FontSize="14"/>
+                    <Grid Grid.Row="2" Grid.Column="1"
+                          ColumnDefinitions="Auto, *">
+                        <Frame Grid.Column="0"
+                               BackgroundColor="{Binding Cor}"
+                               CornerRadius="20"
+                               WidthRequest="40"
+                               HeightRequest="40"
+                               Padding="0"/>
+                        <Picker Grid.Column="1"
+                                ItemsSource="{Binding CoresDisponiveis}"
+                                SelectedItem="{Binding Cor}"
+                                Title="Selecione uma cor"/>
+                    </Grid>
+
+                    <Label Grid.Row="3" Grid.Column="0"
+                           Text="Ícone:"
+                           VerticalOptions="Center"
+                           FontSize="14"/>
+                    <Picker Grid.Row="3" Grid.Column="1"
+                            ItemsSource="{Binding IconesDisponiveis}"
+                            SelectedItem="{Binding Icone}"
+                            Title="Selecione um ícone"/>
+
+                </Grid>
+
+                <Label Text="Descrição:"
+                       FontSize="14"/>
+                <Editor Text="{Binding Descricao}"
+                        Placeholder="Descrição da categoria (opcional)"
+                        AutoSize="TextChanges"
+                        HeightRequest="60"/>
+            </VerticalStackLayout>
+        </Frame>
+
+        <!-- Lista de Categorias -->
+        <Frame Grid.Row="1"
+               BorderColor="{StaticResource Secondary}"
+               CornerRadius="10"
+               Padding="0"
+               HasShadow="True">
+            <RefreshView IsRefreshing="{Binding IsBusy}"
+                         Command="{Binding CarregarCategoriasCommand}">
+                <CollectionView ItemsSource="{Binding Categorias}"
+                                SelectionMode="Single"
+                                SelectedItem="{Binding CategoriaSelecionada}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Padding="15"
+                                   Margin="5"
+                                   CornerRadius="8"
+                                   BackgroundColor="{Binding Cor}">
+                                <Grid ColumnDefinitions="Auto, *, Auto"
+                                      RowDefinitions="Auto, Auto">
+
+                                    <Label Grid.Row="0" Grid.Column="0"
+                                           Text="{Binding Icone}"
+                                           FontSize="20"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Center"
+                                           WidthRequest="40"
+                                           TextColor="White"/>
+
+                                    <VerticalStackLayout Grid.Row="0" Grid.Column="1"
+                                                         Grid.RowSpan="2"
+                                                         Spacing="5">
+                                        <Label Text="{Binding Nome}"
+                                               FontSize="16"
+                                               FontAttributes="Bold"
+                                               TextColor="White"/>
+                                        <Label Text="{Binding Descricao}"
+                                               FontSize="12"
+                                               TextColor="White"/>
+                                    </VerticalStackLayout>
+
+                                    <Label Grid.Row="0" Grid.Column="2"
+                                           Text="{Binding Tipo}"
+                                           FontSize="12"
+                                           FontAttributes="Bold"
+                                           HorizontalOptions="End"
+                                           VerticalOptions="Center"
+                                           TextColor="White"/>
+
+                                    <Label Grid.Row="1" Grid.Column="2"
+                                           Text="{Binding Transacoes.Count, StringFormat='{0} transações'}"
+                                           FontSize="11"
+                                           HorizontalOptions="End"
+                                           VerticalOptions="Center"
+                                           TextColor="White"/>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
+                    <CollectionView.EmptyView>
+                        <StackLayout HorizontalOptions="Center"
+                                     VerticalOptions="Center"
+                                     Padding="40">
+                            <Label Text="Nenhuma categoria cadastrada"
+                                   HorizontalOptions="Center"
+                                   FontSize="16"
+                                   TextColor="{StaticResource MediumGray}"/>
+                            <Label Text="Adicione sua primeira categoria usando o formulário acima"
+                                   HorizontalOptions="Center"
+                                   FontSize="14"
+                                   TextColor="{StaticResource MediumGray}"/>
+                        </StackLayout>
+                    </CollectionView.EmptyView>
+                </CollectionView>
+            </RefreshView>
+        </Frame>
+
+        <!-- Botões -->
+        <Grid Grid.Row="2"
+              ColumnDefinitions="*, *, *, *"
+              ColumnSpacing="10">
+
+            <Button Grid.Column="0"
+                    Text="Novo"
+                    Command="{Binding NovoCommand}"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White"/>
+
+            <Button Grid.Column="1"
+                    Text="Salvar"
+                    Command="{Binding SalvarCommand}"
+                    BackgroundColor="{StaticResource Success}"
+                    TextColor="White"
+                    IsEnabled="{Binding IsNotBusy}"/>
+
+            <Button Grid.Column="2"
+                    Text="Editar"
+                    Command="{Binding EditarCommand}"
+                    BackgroundColor="{StaticResource Warning}"
+                    TextColor="White"
+                    IsEnabled="{Binding CategoriaSelecionada, Converter={StaticResource NotNullToBoolConverter}}"/>
+
+            <Button Grid.Column="3"
+                    Text="Excluir"
+                    Command="{Binding ExcluirCommand}"
+                    BackgroundColor="{StaticResource Danger}"
+                    TextColor="White"
+                    IsEnabled="{Binding CategoriaSelecionada, Converter={StaticResource NotNullToBoolConverter}}"/>
+
+        </Grid>
+
+        <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                          IsVisible="{Binding IsBusy}"
+                          Color="{StaticResource Primary}"
+                          Grid.RowSpan="3"
+                          HorizontalOptions="Center"
+                          VerticalOptions="Center"/>
+
+    </Grid>
+</ContentPage>

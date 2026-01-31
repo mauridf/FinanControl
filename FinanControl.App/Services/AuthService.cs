@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using FinanControl.Core.Entities;
 using FinanControl.Infra.Data;
 using Microsoft.EntityFrameworkCore;
 

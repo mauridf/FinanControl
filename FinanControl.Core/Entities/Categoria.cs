@@ -1,4 +1,6 @@
-﻿namespace FinanControl.Core.Entities
+﻿using FinanControl.Core.Enums;
+
+namespace FinanControl.Core.Entities
 {
     public class Categoria : BaseEntity
     {

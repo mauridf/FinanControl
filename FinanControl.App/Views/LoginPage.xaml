@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FinanControl.App.Views.LoginPage"
+             Title="FinanControl - Login"
+             xmlns:viewmodel="clr-namespace:FinanControl.App.ViewModels"
+             x:DataType="viewmodel:LoginViewModel">
+
+    <ContentPage.BindingContext>
+        <viewmodel:LoginViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="25" Padding="30,0" VerticalOptions="Center">
+
+            <Image Source="logo_financas.png"
+                   HeightRequest="100"
+                   Aspect="AspectFit"
+                   HorizontalOptions="Center" />
+
+            <Label Text="FinanControl"
+                   FontSize="32"
+                   HorizontalOptions="Center"
+                   TextColor="{StaticResource Primary}"
+                   FontAttributes="Bold" />
+
+            <Label Text="Controle suas finanças de forma simples"
+                   FontSize="16"
+                   HorizontalOptions="Center"
+                   TextColor="{StaticResource MediumGray}" />
+
+            <Frame Padding="20" 
+                   CornerRadius="10" 
+                   BackgroundColor="{StaticResource LightGray}"
+                   HasShadow="True">
+                <VerticalStackLayout Spacing="15">
+
+                    <Label Text="Email"
+                           FontSize="14"
+                           TextColor="{StaticResource DarkGray}" />
+                    <Entry Placeholder="seu@email.com"
+                           Keyboard="Email"
+                           Text="{Binding Email}"
+                           ClearButtonVisibility="WhileEditing" />
+
+                    <Label Text="Senha"
+                           FontSize="14"
+                           TextColor="{StaticResource DarkGray}" />
+                    <Entry Placeholder="Digite sua senha"
+                           IsPassword="True"
+                           Text="{Binding Senha}"
+                           ClearButtonVisibility="WhileEditing" />
+
+                    <Button Text="Entrar"
+                            Command="{Binding LoginCommand}"
+                            IsEnabled="{Binding IsNotBusy}"
+                            BackgroundColor="{StaticResource Primary}"
+                            Margin="0,10,0,0" />
+
+                    <Button Text="Criar uma conta"
+                            Command="{Binding RegistrarCommand}"
+                            IsEnabled="{Binding IsNotBusy}"
+                            BackgroundColor="Transparent"
+                            TextColor="{StaticResource Primary}"
+                            BorderColor="{StaticResource Primary}"
+                            BorderWidth="1" />
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                              IsVisible="{Binding IsBusy}"
+                              Color="{StaticResource Primary}"
+                              HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -1,6 +1,9 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows.Input;
 using FinanControl.App.Services;
 using FinanControl.Core.Entities;
+using FinanControl.Core.Enums;
+using FinanControl.Infra.Data.Interfaces;
 
 namespace FinanControl.App.ViewModels
 {
@@ -53,6 +56,11 @@ namespace FinanControl.App.ViewModels
             set => SetProperty(ref _ultimasTransacoes, value);
         }
 
+        public ICommand CarregarDadosCommand { get; }
+        public ICommand VerTransacoesCommand { get; }
+        public ICommand NovaReceitaCommand { get; }
+        public ICommand NovaDespesaCommand { get; }
+
         public DashboardViewModel(
             IRepository<Conta> contaRepository,
             IRepository<Transacao> transacaoRepository,
@@ -65,6 +73,13 @@ namespace FinanControl.App.ViewModels
             Contas = new ObservableCollection<Conta>();
             UltimasTransacoes = new ObservableCollection<Transacao>();
 
+            // Inicializar comandos no construtor
+            CarregarDadosCommand = new Command(async () => await CarregarDados());
+            VerTransacoesCommand = new Command(async () => await VerTransacoes());
+            NovaReceitaCommand = new Command(async () => await NovaTransacao(TipoTransacao.Receita));
+            NovaDespesaCommand = new Command(async () => await NovaTransacao(TipoTransacao.Despesa));
+
+            // Carregar dados inicialmente
             Task.Run(async () => await CarregarDados());
         }
 
@@ -100,11 +115,11 @@ namespace FinanControl.App.ViewModels
                     .ToList();
 
                 TotalReceitasMes = transacoesMes
-                    .Where(t => t.Tipo == Core.Enums.TipoTransacao.Receita)
+                    .Where(t => t.Tipo == TipoTransacao.Receita)
                     .Sum(t => t.Valor);
 
                 TotalDespesasMes = transacoesMes
-                    .Where(t => t.Tipo == Core.Enums.TipoTransacao.Despesa)
+                    .Where(t => t.Tipo == TipoTransacao.Despesa)
                     .Sum(t => t.Valor);
 
                 SaldoMes = TotalReceitasMes - TotalDespesasMes;
@@ -128,6 +143,17 @@ namespace FinanControl.App.ViewModels
             {
                 IsBusy = false;
             }
+        }
+
+        private async Task VerTransacoes()
+        {
+            await Shell.Current.GoToAsync("//TransacoesPage");
+        }
+
+        private async Task NovaTransacao(TipoTransacao tipo)
+        {
+            await Shell.Current.GoToAsync("//TransacoesPage");
+            // Aqui poderia passar parâmetros para pré-selecionar o tipo
         }
     }
 }

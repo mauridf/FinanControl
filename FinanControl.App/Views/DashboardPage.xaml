@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FinanControl.App.Views.DashboardPage"
+             Title="Dashboard"
+             xmlns:viewmodel="clr-namespace:FinanControl.App.ViewModels"
+             x:DataType="viewmodel:DashboardViewModel">
+
+    <ContentPage.BindingContext>
+        <viewmodel:DashboardViewModel />
+    </ContentPage.BindingContext>
+
+    <RefreshView IsRefreshing="{Binding IsBusy}"
+                 Command="{Binding CarregarDadosCommand}"
+                 Grid.Row="0">
+        <ScrollView>
+            <VerticalStackLayout Spacing="15" Padding="20">
+
+                <!-- Cabeçalho com saudação -->
+                <Frame BackgroundColor="{StaticResource Primary}"
+                       CornerRadius="10"
+                       Padding="20"
+                       HasShadow="True">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Bem-vindo ao FinanControl!"
+                               FontSize="20"
+                               TextColor="White"
+                               FontAttributes="Bold" />
+                        <Label Text="Controle suas finanças de forma eficiente"
+                               FontSize="14"
+                               TextColor="#E0E0E0" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Resumo Financeiro -->
+                <Frame CornerRadius="10"
+                       BackgroundColor="{StaticResource LightGray}"
+                       Padding="15"
+                       HasShadow="True">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Resumo Financeiro"
+                               FontSize="16"
+                               TextColor="{StaticResource Primary}"
+                               FontAttributes="Bold" />
+
+                        <Grid ColumnDefinitions="*, *" 
+                              RowDefinitions="Auto, Auto, Auto"
+                              ColumnSpacing="10"
+                              RowSpacing="10">
+
+                            <!-- Saldo Total -->
+                            <Frame Grid.Row="0" Grid.Column="0"
+                                   BackgroundColor="#E8F5E9"
+                                   CornerRadius="8"
+                                   Padding="15">
+                                <VerticalStackLayout>
+                                    <Label Text="Saldo Total"
+                                           FontSize="12"
+                                           TextColor="#388E3C" />
+                                    <Label Text="{Binding SaldoTotal, StringFormat='R$ {0:F2}'}"
+                                           FontSize="18"
+                                           FontAttributes="Bold"
+                                           TextColor="#388E3C" />
+                                </VerticalStackLayout>
+                            </Frame>
+
+                            <!-- Saldo do Mês -->
+                            <Frame Grid.Row="0" Grid.Column="1"
+                                   BackgroundColor="{Binding SaldoMes, Converter={StaticResource SaldoToColorConverter}}"
+                                   CornerRadius="8"
+                                   Padding="15">
+                                <VerticalStackLayout>
+                                    <Label Text="Saldo do Mês"
+                                           FontSize="12"
+                                           TextColor="White" />
+                                    <Label Text="{Binding SaldoMes, StringFormat='R$ {0:F2}'}"
+                                           FontSize="18"
+                                           FontAttributes="Bold"
+                                           TextColor="White" />
+                                </VerticalStackLayout>
+                            </Frame>
+
+                            <!-- Receitas do Mês -->
+                            <Frame Grid.Row="1" Grid.Column="0"
+                                   BackgroundColor="#E8F5E9"
+                                   CornerRadius="8"
+                                   Padding="15">
+                                <VerticalStackLayout>
+                                    <Label Text="Receitas"
+                                           FontSize="12"
+                                           TextColor="#388E3C" />
+                                    <Label Text="{Binding TotalReceitasMes, StringFormat='R$ {0:F2}'}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="#388E3C" />
+                                </VerticalStackLayout>
+                            </Frame>
+
+                            <!-- Despesas do Mês -->
+                            <Frame Grid.Row="1" Grid.Column="1"
+                                   BackgroundColor="#FFEBEE"
+                                   CornerRadius="8"
+                                   Padding="15">
+                                <VerticalStackLayout>
+                                    <Label Text="Despesas"
+                                           FontSize="12"
+                                           TextColor="#D32F2F" />
+                                    <Label Text="{Binding TotalDespesasMes, StringFormat='R$ {0:F2}'}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="#D32F2F" />
+                                </VerticalStackLayout>
+                            </Frame>
+
+                            <!-- Contas Ativas -->
+                            <Frame Grid.Row="2" Grid.Column="0"
+                                   BackgroundColor="#E3F2FD"
+                                   CornerRadius="8"
+                                   Padding="15">
+                                <VerticalStackLayout>
+                                    <Label Text="Contas Ativas"
+                                           FontSize="12"
+                                           TextColor="#1976D2" />
+                                    <Label Text="{Binding Contas.Count}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="#1976D2" />
+                                </VerticalStackLayout>
+                            </Frame>
+
+                            <!-- Status -->
+                            <Frame Grid.Row="2" Grid.Column="1"
+                                   BackgroundColor="#FFF3E0"
+                                   CornerRadius="8"
+                                   Padding="15">
+                                <VerticalStackLayout>
+                                    <Label Text="Status"
+                                           FontSize="12"
+                                           TextColor="#F57C00" />
+                                    <Label Text="{Binding SaldoMes, Converter={StaticResource SaldoToStatusConverter}}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="#F57C00" />
+                                </VerticalStackLayout>
+                            </Frame>
+
+                        </Grid>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Últimas Transações -->
+                <Frame CornerRadius="10"
+                       BackgroundColor="{StaticResource LightGray}"
+                       Padding="15"
+                       HasShadow="True">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Últimas Transações"
+                               FontSize="16"
+                               TextColor="{StaticResource Primary}"
+                               FontAttributes="Bold" />
+
+                        <CollectionView ItemsSource="{Binding UltimasTransacoes}"
+                                        HeightRequest="200">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame Padding="10"
+                                           Margin="0,0,0,5"
+                                           CornerRadius="8"
+                                           BackgroundColor="{Binding Tipo, Converter={StaticResource TipoTransacaoToColorConverter}}">
+                                        <Grid ColumnDefinitions="*, Auto"
+                                              RowDefinitions="Auto, Auto">
+
+                                            <Label Grid.Row="0" Grid.Column="0"
+                                                   Text="{Binding Descricao}"
+                                                   FontSize="14"
+                                                   FontAttributes="Bold"
+                                                   TextColor="White" />
+
+                                            <Label Grid.Row="1" Grid.Column="0"
+                                                   Text="{Binding Data, StringFormat='{0:dd/MM/yyyy}'}"
+                                                   FontSize="12"
+                                                   TextColor="White" />
+
+                                            <Label Grid.Row="0" Grid.RowSpan="2" Grid.Column="1"
+                                                   Text="{Binding Valor, StringFormat='R$ {0:F2}'}"
+                                                   FontSize="16"
+                                                   FontAttributes="Bold"
+                                                   TextColor="White"
+                                                   VerticalOptions="Center" />
+
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+
+                            <CollectionView.EmptyView>
+                                <StackLayout HorizontalOptions="Center"
+                                             VerticalOptions="Center"
+                                             Padding="20">
+                                    <Label Text="Nenhuma transação recente"
+                                           HorizontalOptions="Center"
+                                           FontSize="14"
+                                           TextColor="{StaticResource MediumGray}" />
+                                </StackLayout>
+                            </CollectionView.EmptyView>
+                        </CollectionView>
+
+                        <Button Text="Ver Todas as Transações"
+                                Command="{Binding VerTransacoesCommand}"
+                                BackgroundColor="Transparent"
+                                TextColor="{StaticResource Primary}"
+                                BorderColor="{StaticResource Primary}"
+                                BorderWidth="1"
+                                Margin="0,10,0,0" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Ações Rápidas -->
+                <Grid ColumnDefinitions="*, *"
+                      ColumnSpacing="10">
+
+                    <Button Grid.Column="0"
+                            Text="Nova Receita"
+                            Command="{Binding NovaReceitaCommand}"
+                            BackgroundColor="{StaticResource Success}"
+                            TextColor="White" />
+
+                    <Button Grid.Column="1"
+                            Text="Nova Despesa"
+                            Command="{Binding NovaDespesaCommand}"
+                            BackgroundColor="{StaticResource Danger}"
+                            TextColor="White" />
+
+                </Grid>
+
+                <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                                  IsVisible="{Binding IsBusy}"
+                                  Color="{StaticResource Primary}"
+                                  HorizontalOptions="Center" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+</ContentPage>
