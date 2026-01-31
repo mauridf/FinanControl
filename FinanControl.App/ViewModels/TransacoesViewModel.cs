@@ -25,8 +25,8 @@ public class TransacoesViewModel : BaseViewModel
     private DateTime _data = DateTime.Today;
     private bool _efetivada = true;
     private bool _recorrente;
-    private int _contaId;
-    private int _categoriaId;
+    private int _contaIndex = -1;
+    private int _categoriaIndex = -1;
     private bool _isEditing;
 
     public ObservableCollection<Transacao> Transacoes
@@ -105,16 +105,16 @@ public class TransacoesViewModel : BaseViewModel
         set => SetProperty(ref _recorrente, value);
     }
 
-    public int ContaId
+    public int ContaIndex
     {
-        get => _contaId;
-        set => SetProperty(ref _contaId, value);
+        get => _contaIndex;
+        set => SetProperty(ref _contaIndex, value);
     }
 
-    public int CategoriaId
+    public int CategoriaIndex
     {
-        get => _categoriaId;
-        set => SetProperty(ref _categoriaId, value);
+        get => _categoriaIndex;
+        set => SetProperty(ref _categoriaIndex, value);
     }
 
     public bool IsEditing
@@ -131,6 +131,7 @@ public class TransacoesViewModel : BaseViewModel
     public ICommand CarregarDadosCommand { get; }
 
     public IEnumerable<TipoTransacao> TiposTransacao => Enum.GetValues<TipoTransacao>();
+    public bool IsNotBusy => !IsBusy;
 
     public TransacoesViewModel(
         IRepository<Transacao> transacaoRepository,
@@ -158,7 +159,7 @@ public class TransacoesViewModel : BaseViewModel
         Task.Run(async () => await CarregarDados());
     }
 
-    private async Task CarregarDados()
+    public async Task CarregarDados()
     {
         try
         {
@@ -177,13 +178,7 @@ public class TransacoesViewModel : BaseViewModel
             Contas = new ObservableCollection<Conta>(contasUsuario);
 
             // Carregar categorias (inicialmente sem filtro)
-            var categorias = await _categoriaRepository.GetAllAsync();
-            var categoriasUsuario = categorias
-                .Where(c => c.UsuarioId == usuario.Id && c.Ativo && c.Tipo == Tipo)
-                .OrderBy(c => c.Nome)
-                .ToList();
-
-            Categorias = new ObservableCollection<Categoria>(categoriasUsuario);
+            await FiltrarCategoriasPorTipo();
 
             // Carregar transações do mês atual
             var primeiroDiaMes = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
@@ -225,12 +220,7 @@ public class TransacoesViewModel : BaseViewModel
                 .ToList();
 
             Categorias = new ObservableCollection<Categoria>(categoriasFiltradas);
-
-            // Se houver categorias, selecionar a primeira
-            if (categoriasFiltradas.Any() && CategoriaId == 0)
-            {
-                CategoriaId = categoriasFiltradas.First().Id;
-            }
+            CategoriaIndex = -1; // Resetar seleção
         }
         catch (Exception ex)
         {
@@ -256,14 +246,14 @@ public class TransacoesViewModel : BaseViewModel
                 return;
             }
 
-            if (ContaId <= 0)
+            if (ContaIndex < 0 || ContaIndex >= Contas.Count)
             {
                 await Shell.Current.DisplayAlert("Atenção",
                     "Selecione uma conta", "OK");
                 return;
             }
 
-            if (CategoriaId <= 0)
+            if (CategoriaIndex < 0 || CategoriaIndex >= Categorias.Count)
             {
                 await Shell.Current.DisplayAlert("Atenção",
                     "Selecione uma categoria", "OK");
@@ -272,6 +262,9 @@ public class TransacoesViewModel : BaseViewModel
 
             var usuario = await _authService.GetUsuarioLogadoAsync();
             if (usuario == null) return;
+
+            var contaSelecionada = Contas[ContaIndex];
+            var categoriaSelecionada = Categorias[CategoriaIndex];
 
             Transacao transacao;
 
@@ -295,8 +288,8 @@ public class TransacoesViewModel : BaseViewModel
             transacao.Data = Data;
             transacao.Efetivada = Efetivada;
             transacao.Recorrente = Recorrente;
-            transacao.ContaId = ContaId;
-            transacao.CategoriaId = CategoriaId;
+            transacao.ContaId = contaSelecionada.Id;
+            transacao.CategoriaId = categoriaSelecionada.Id;
 
             if (IsEditing)
             {
@@ -314,7 +307,7 @@ public class TransacoesViewModel : BaseViewModel
             // Atualizar saldo da conta se a transação estiver efetivada
             if (Efetivada)
             {
-                await AtualizarSaldoConta(ContaId, Valor, Tipo);
+                await AtualizarSaldoConta(contaSelecionada.Id, Valor, Tipo);
             }
 
             await CarregarDados();
@@ -421,8 +414,18 @@ public class TransacoesViewModel : BaseViewModel
         Data = transacao.Data;
         Efetivada = transacao.Efetivada;
         Recorrente = transacao.Recorrente;
-        ContaId = transacao.ContaId;
-        CategoriaId = transacao.CategoriaId;
+
+        // Encontrar índices
+        if (Contas.Any())
+        {
+            ContaIndex = Contas.ToList().FindIndex(c => c.Id == transacao.ContaId);
+        }
+
+        if (Categorias.Any())
+        {
+            CategoriaIndex = Categorias.ToList().FindIndex(c => c.Id == transacao.CategoriaId);
+        }
+
         IsEditing = true;
     }
 
@@ -442,8 +445,8 @@ public class TransacoesViewModel : BaseViewModel
         Data = DateTime.Today;
         Efetivada = true;
         Recorrente = false;
-        ContaId = 0;
-        CategoriaId = 0;
+        ContaIndex = -1;
+        CategoriaIndex = -1;
         TransacaoSelecionada = null;
         IsEditing = false;
     }

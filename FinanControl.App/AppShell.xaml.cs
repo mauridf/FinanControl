@@ -1,10 +1,15 @@
-﻿namespace FinanControl.App
+﻿using FinanControl.App.Views;
+
+namespace FinanControl.App;
+
+public partial class AppShell : Shell
 {
-    public partial class AppShell : Shell
+    public AppShell()
     {
-        public AppShell()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+
+        // Registrar rotas para navegação
+        Routing.RegisterRoute(nameof(LoginPage), typeof(LoginPage));
+        Routing.RegisterRoute(nameof(RegistroPage), typeof(RegistroPage));
     }
 }

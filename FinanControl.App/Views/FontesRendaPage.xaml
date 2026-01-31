@@ -7,10 +7,6 @@
              x:DataType="viewmodel:FontesRendaViewModel"
              xmlns:converters="clr-namespace:FinanControl.App.Converters">
 
-    <ContentPage.BindingContext>
-        <viewmodel:FontesRendaViewModel />
-    </ContentPage.BindingContext>
-
     <ContentPage.Resources>
         <converters:NotNullToBoolConverter x:Key="NotNullToBoolConverter" />
     </ContentPage.Resources>

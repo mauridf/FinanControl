@@ -5,15 +5,14 @@
              Title="Transações"
              xmlns:viewmodel="clr-namespace:FinanControl.App.ViewModels"
              x:DataType="viewmodel:TransacoesViewModel"
-             xmlns:converters="clr-namespace:FinanControl.App.Converters">
-
-    <ContentPage.BindingContext>
-        <viewmodel:TransacoesViewModel />
-    </ContentPage.BindingContext>
+             xmlns:converters="clr-namespace:FinanControl.App.Converters"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
 
     <ContentPage.Resources>
         <converters:NotNullToBoolConverter x:Key="NotNullToBoolConverter" />
         <converters:TipoTransacaoToColorConverter x:Key="TipoTransacaoToColorConverter" />
+        <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+        <converters:BoolToStatusConverter x:Key="BoolToStatusConverter" />
     </ContentPage.Resources>
 
     <Grid RowDefinitions="Auto, *, Auto" 
@@ -82,9 +81,9 @@
                            FontSize="14"/>
                     <Picker Grid.Row="0" Grid.Column="1"
                             ItemsSource="{Binding Contas}"
-                            SelectedItem="{Binding ContaId}"
+                            SelectedIndex="{Binding ContaIndex}"
                             ItemDisplayBinding="{Binding Nome}"
-                            Title="Selecione a conta"/>
+                            Title="Selecione a conta" />
 
                     <Label Grid.Row="1" Grid.Column="0"
                            Text="Categoria:*"
@@ -92,9 +91,9 @@
                            FontSize="14"/>
                     <Picker Grid.Row="1" Grid.Column="1"
                             ItemsSource="{Binding Categorias}"
-                            SelectedItem="{Binding CategoriaId}"
+                            SelectedIndex="{Binding CategoriaIndex}"
                             ItemDisplayBinding="{Binding Nome}"
-                            Title="Selecione a categoria"/>
+                            Title="Selecione a categoria" />
 
                 </Grid>
 

@@ -10,12 +10,17 @@ public partial class DashboardPage : ContentPage
         BindingContext = viewModel;
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
+
         if (BindingContext is DashboardViewModel viewModel)
         {
-            _ = viewModel.CarregarDados();
+            // Verificar autenticação antes de carregar dados
+            if (await viewModel.VerificarAutenticacao())
+            {
+                _ = viewModel.CarregarDados();
+            }
         }
     }
 }

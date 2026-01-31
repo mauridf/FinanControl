@@ -7,10 +7,6 @@
              x:DataType="viewmodel:ContasViewModel"
              xmlns:enums="clr-namespace:FinanControl.Core.Enums;assembly=FinanControl.Core">
 
-    <ContentPage.BindingContext>
-        <viewmodel:ContasViewModel />
-    </ContentPage.BindingContext>
-
     <Grid RowDefinitions="Auto, *, Auto" 
           ColumnDefinitions="*"
           Padding="20"

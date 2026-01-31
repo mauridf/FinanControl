@@ -99,7 +99,7 @@ public class ContasViewModel : BaseViewModel
         CarregarContas();
     }
 
-    private async Task CarregarContas()
+    public async Task CarregarContas()
     {
         try
         {
@@ -239,4 +239,6 @@ public class ContasViewModel : BaseViewModel
         ContaSelecionada = null;
         IsEditing = false;
     }
+
+    public bool IsNotBusy => !IsBusy;
 }

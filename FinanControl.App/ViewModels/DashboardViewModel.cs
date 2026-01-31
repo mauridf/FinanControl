@@ -60,6 +60,7 @@ namespace FinanControl.App.ViewModels
         public ICommand VerTransacoesCommand { get; }
         public ICommand NovaReceitaCommand { get; }
         public ICommand NovaDespesaCommand { get; }
+        public ICommand LogoutCommand { get; }
 
         public DashboardViewModel(
             IRepository<Conta> contaRepository,
@@ -78,15 +79,35 @@ namespace FinanControl.App.ViewModels
             VerTransacoesCommand = new Command(async () => await VerTransacoes());
             NovaReceitaCommand = new Command(async () => await NovaTransacao(TipoTransacao.Receita));
             NovaDespesaCommand = new Command(async () => await NovaTransacao(TipoTransacao.Despesa));
+            LogoutCommand = new Command(async () => await Logout());
 
             // Carregar dados inicialmente
             Task.Run(async () => await CarregarDados());
         }
 
-        private async Task CarregarDados()
+        public async Task<bool> VerificarAutenticacao()
+        {
+            var usuario = await _authService.GetUsuarioLogadoAsync();
+
+            if (usuario == null)
+            {
+                if (App.Current is App currentApp)
+                {
+                    currentApp.NavigateToLogin();
+                }
+                return false;
+            }
+
+            return true;
+        }
+
+        public async Task CarregarDados()
         {
             try
             {
+                if (!await VerificarAutenticacao())
+                    return;
+
                 IsBusy = true;
 
                 var usuario = await _authService.GetUsuarioLogadoAsync();
@@ -155,5 +176,22 @@ namespace FinanControl.App.ViewModels
             await Shell.Current.GoToAsync("//TransacoesPage");
             // Aqui poderia passar parâmetros para pré-selecionar o tipo
         }
+
+        private async Task Logout()
+        {
+            var confirm = await Shell.Current.DisplayAlert("Sair",
+                "Deseja realmente sair da aplicação?", "Sim", "Não");
+
+            if (confirm)
+            {
+                _authService.Logout();
+                if (Application.Current is App currentApp)
+                {
+                    currentApp.NavigateToLogin();
+                }
+            }
+        }
+
+        public bool IsNotBusy => !IsBusy;
     }
 }

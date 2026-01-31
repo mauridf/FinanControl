@@ -7,10 +7,6 @@
              x:DataType="viewmodel:CategoriasViewModel"
              xmlns:converters="clr-namespace:FinanControl.App.Converters">
 
-    <ContentPage.BindingContext>
-        <viewmodel:CategoriasViewModel />
-    </ContentPage.BindingContext>
-
     <ContentPage.Resources>
         <converters:NotNullToBoolConverter x:Key="NotNullToBoolConverter" />
     </ContentPage.Resources>

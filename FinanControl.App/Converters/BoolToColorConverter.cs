@@ -15,6 +15,14 @@ public class BoolToColorConverter : IValueConverter
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        throw new NotImplementedException();
+        if (value is Color color)
+        {
+            var hexColor = color.ToHex().ToUpper();
+
+            // Verde indica true, Laranja indica false
+            return hexColor == "#4CAF50";
+        }
+
+        return false;
     }
 }

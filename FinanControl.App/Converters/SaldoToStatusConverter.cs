@@ -20,7 +20,17 @@ namespace FinanControl.App.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            if (value is string status)
+            {
+                return status switch
+                {
+                    "Positivo" => 100m,    // Valor exemplo
+                    "Negativo" => -100m,   // Valor exemplo
+                    "Neutro" => 0m,
+                    _ => 0m
+                };
+            }
+            return 0m;
         }
     }
 }

@@ -117,7 +117,7 @@ public class CategoriasViewModel : BaseViewModel
         CarregarCategorias();
     }
 
-    private async Task CarregarCategorias()
+    public async Task CarregarCategorias()
     {
         try
         {
@@ -293,4 +293,6 @@ public class CategoriasViewModel : BaseViewModel
         CategoriaSelecionada = null;
         IsEditing = false;
     }
+
+    public bool IsNotBusy => !IsBusy;
 }

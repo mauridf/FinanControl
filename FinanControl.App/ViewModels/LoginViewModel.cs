@@ -1,5 +1,6 @@
-﻿using FinanControl.App.Services;
-using System.Windows.Input;
+﻿using System.Windows.Input;
+using FinanControl.App.Services;
+using FinanControl.App.Views;
 
 namespace FinanControl.App.ViewModels;
 
@@ -36,7 +37,7 @@ public class LoginViewModel : BaseViewModel
     {
         if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Senha))
         {
-            await Shell.Current.DisplayAlert("Erro", "Preencha todos os campos", "OK");
+            await Application.Current.MainPage.DisplayAlert("Erro", "Preencha todos os campos", "OK");
             return;
         }
 
@@ -47,17 +48,20 @@ public class LoginViewModel : BaseViewModel
             var sucesso = await _authService.LoginAsync(Email, Senha);
             if (sucesso)
             {
-                // Navegar para Dashboard
-                await Shell.Current.GoToAsync("//DashboardPage");
+                // Navegar para o AppShell
+                if (Application.Current is App app)
+                {
+                    app.NavigateToMainApp();
+                }
             }
             else
             {
-                await Shell.Current.DisplayAlert("Erro", "Email ou senha inválidos", "OK");
+                await Application.Current.MainPage.DisplayAlert("Erro", "Email ou senha inválidos", "OK");
             }
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Erro", $"Erro ao fazer login: {ex.Message}", "OK");
+            await Application.Current.MainPage.DisplayAlert("Erro", $"Erro ao fazer login: {ex.Message}", "OK");
         }
         finally
         {
@@ -67,6 +71,14 @@ public class LoginViewModel : BaseViewModel
 
     private async Task Registrar()
     {
-        await Shell.Current.GoToAsync("//RegistroPage");
+        // Navegar para a página de registro
+        await Application.Current.MainPage.Navigation.PushAsync(CreateRegistroPage());
+    }
+
+    private RegistroPage CreateRegistroPage()
+    {
+        // Usar o AuthService já injetado no view model em vez de acessar um campo privado inexistente em App
+        var viewModel = new RegistroViewModel(_authService);
+        return new RegistroPage(viewModel);
     }
 }

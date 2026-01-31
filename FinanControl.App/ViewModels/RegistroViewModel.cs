@@ -1,6 +1,8 @@
-﻿using FinanControl.App.Services;
-using FinanControl.Core.Entities;
+﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using FinanControl.App.Services;
+using FinanControl.Core.Entities;
 
 namespace FinanControl.App.ViewModels;
 
@@ -15,46 +17,82 @@ public class RegistroViewModel : BaseViewModel
     private string _confirmarSenha = string.Empty;
     private readonly AuthService _authService;
 
+    // Propriedades públicas que expõem os campos privados e notificam mudança
     public string Nome
     {
         get => _nome;
-        set => SetProperty(ref _nome, value);
+        set
+        {
+            if (_nome == value) return;
+            _nome = value;
+            OnPropertyChanged(nameof(Nome));
+        }
     }
 
     public string Email
     {
         get => _email;
-        set => SetProperty(ref _email, value);
+        set
+        {
+            if (_email == value) return;
+            _email = value;
+            OnPropertyChanged(nameof(Email));
+        }
     }
 
     public string Telefone
     {
         get => _telefone;
-        set => SetProperty(ref _telefone, value);
+        set
+        {
+            if (_telefone == value) return;
+            _telefone = value;
+            OnPropertyChanged(nameof(Telefone));
+        }
     }
 
     public DateTime DataNascimento
     {
         get => _dataNascimento;
-        set => SetProperty(ref _dataNascimento, value);
+        set
+        {
+            if (_dataNascimento == value) return;
+            _dataNascimento = value;
+            OnPropertyChanged(nameof(DataNascimento));
+        }
     }
 
     public string Endereco
     {
         get => _endereco;
-        set => SetProperty(ref _endereco, value);
+        set
+        {
+            if (_endereco == value) return;
+            _endereco = value;
+            OnPropertyChanged(nameof(Endereco));
+        }
     }
 
     public string Senha
     {
         get => _senha;
-        set => SetProperty(ref _senha, value);
+        set
+        {
+            if (_senha == value) return;
+            _senha = value;
+            OnPropertyChanged(nameof(Senha));
+        }
     }
 
     public string ConfirmarSenha
     {
         get => _confirmarSenha;
-        set => SetProperty(ref _confirmarSenha, value);
+        set
+        {
+            if (_confirmarSenha == value) return;
+            _confirmarSenha = value;
+            OnPropertyChanged(nameof(ConfirmarSenha));
+        }
     }
 
     public ICommand RegistrarCommand { get; }
@@ -75,19 +113,19 @@ public class RegistroViewModel : BaseViewModel
             string.IsNullOrWhiteSpace(Senha) ||
             string.IsNullOrWhiteSpace(ConfirmarSenha))
         {
-            await Shell.Current.DisplayAlert("Erro", "Preencha todos os campos obrigatórios", "OK");
+            await Application.Current.MainPage.DisplayAlert("Erro", "Preencha todos os campos obrigatórios", "OK");
             return;
         }
 
         if (Senha != ConfirmarSenha)
         {
-            await Shell.Current.DisplayAlert("Erro", "As senhas não coincidem", "OK");
+            await Application.Current.MainPage.DisplayAlert("Erro", "As senhas não coincidem", "OK");
             return;
         }
 
         if (Senha.Length < 6)
         {
-            await Shell.Current.DisplayAlert("Erro", "A senha deve ter pelo menos 6 caracteres", "OK");
+            await Application.Current.MainPage.DisplayAlert("Erro", "A senha deve ter pelo menos 6 caracteres", "OK");
             return;
         }
 
@@ -108,17 +146,21 @@ public class RegistroViewModel : BaseViewModel
             var sucesso = await _authService.RegistrarAsync(usuario, Senha);
             if (sucesso)
             {
-                await Shell.Current.DisplayAlert("Sucesso", "Cadastro realizado com sucesso!", "OK");
-                await Shell.Current.GoToAsync("//DashboardPage");
+                await Application.Current.MainPage.DisplayAlert("Sucesso", "Cadastro realizado com sucesso!", "OK");
+                // Navegar para o AppShell
+                if (Application.Current is App app)
+                {
+                    app.NavigateToMainApp();
+                }
             }
             else
             {
-                await Shell.Current.DisplayAlert("Erro", "Este email já está em uso", "OK");
+                await Application.Current.MainPage.DisplayAlert("Erro", "Este email já está em uso", "OK");
             }
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Erro", $"Erro ao registrar: {ex.Message}", "OK");
+            await Application.Current.MainPage.DisplayAlert("Erro", $"Erro ao registrar: {ex.Message}", "OK");
         }
         finally
         {
@@ -128,6 +170,7 @@ public class RegistroViewModel : BaseViewModel
 
     private async Task Voltar()
     {
-        await Shell.Current.GoToAsync("//LoginPage");
+        // Voltar para a página de login
+        await Application.Current.MainPage.Navigation.PopAsync();
     }
 }

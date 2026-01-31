@@ -6,10 +6,6 @@
              xmlns:viewmodel="clr-namespace:FinanControl.App.ViewModels"
              x:DataType="viewmodel:RegistroViewModel">
 
-    <ContentPage.BindingContext>
-        <viewmodel:RegistroViewModel />
-    </ContentPage.BindingContext>
-
     <ScrollView>
         <VerticalStackLayout Spacing="15" Padding="20">
 

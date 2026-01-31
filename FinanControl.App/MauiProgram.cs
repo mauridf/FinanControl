@@ -2,7 +2,7 @@
 using FinanControl.App.Services;
 using FinanControl.App.ViewModels;
 using FinanControl.App.Views;
-using FinanControl.Core.Entities;
+using CommunityToolkit.Maui;
 using FinanControl.Infra.Data;
 using FinanControl.Infra.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +17,7 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .UseMauiCommunityToolkit()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -41,8 +42,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<AuthService>();
 
         // Registrar ViewModels
-        builder.Services.AddSingleton<LoginViewModel>();
-        builder.Services.AddSingleton<RegistroViewModel>();
+        builder.Services.AddTransient<LoginViewModel>();
+        builder.Services.AddTransient<RegistroViewModel>();
         builder.Services.AddSingleton<DashboardViewModel>();
         builder.Services.AddSingleton<ContasViewModel>();
         builder.Services.AddSingleton<CategoriasViewModel>();
@@ -50,8 +51,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<TransacoesViewModel>();
 
         // Registrar Views
-        builder.Services.AddSingleton<LoginPage>();
-        builder.Services.AddSingleton<RegistroPage>();
+        builder.Services.AddTransient<LoginPage>();
+        builder.Services.AddTransient<RegistroPage>();
         builder.Services.AddSingleton<DashboardPage>();
         builder.Services.AddSingleton<ContasPage>();
         builder.Services.AddSingleton<CategoriasPage>();
@@ -65,7 +66,15 @@ public static class MauiProgram
         builder.Services.AddSingleton<SaldoToStatusConverter>();
         builder.Services.AddSingleton<BoolToColorConverter>();
         builder.Services.AddSingleton<BoolToStatusConverter>();
+        builder.Services.AddSingleton<CategoriaToIdConverter>();
+        builder.Services.AddSingleton<ContaToIdConverter>();
 
-        return builder.Build();
+        var mauiApp = builder.Build();
+
+        ServiceLocator.ServiceProvider = mauiApp.Services;
+
+
+
+        return mauiApp;
     }
 }

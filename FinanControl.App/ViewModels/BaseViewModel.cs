@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using FinanControl.App.Services;
 
 namespace FinanControl.App.ViewModels;
 
@@ -42,5 +43,23 @@ public abstract class BaseViewModel : INotifyPropertyChanged
             return;
 
         changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    protected async Task<bool> VerificarAutenticacao()
+    {
+        var authService = App.Current.Handler.MauiContext.Services.GetService<AuthService>();
+        var usuario = await authService.GetUsuarioLogadoAsync();
+
+        if (usuario == null)
+        {
+            if (App.Current is App currentApp)
+            {
+                currentApp.NavigateToLogin();
+            }
+
+            return false;
+        }
+
+        return true;
     }
 }

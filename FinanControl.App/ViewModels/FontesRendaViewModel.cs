@@ -117,7 +117,7 @@ public class FontesRendaViewModel : BaseViewModel
         CarregarFontesRenda();
     }
 
-    private async Task CarregarFontesRenda()
+    public async Task CarregarFontesRenda()
     {
         try
         {
@@ -275,4 +275,6 @@ public class FontesRendaViewModel : BaseViewModel
         FonteRendaSelecionada = null;
         IsEditing = false;
     }
+
+    public bool IsNotBusy => !IsBusy;
 }

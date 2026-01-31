@@ -22,6 +22,19 @@ public class TipoTransacaoToColorConverter : IValueConverter
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        throw new NotImplementedException();
+        if (value is Color color)
+        {
+            var hexColor = color.ToHex().ToUpper();
+
+            return hexColor switch
+            {
+                "#4CAF50" => TipoTransacao.Receita,     // Verde
+                "#F44336" => TipoTransacao.Despesa,     // Vermelho  
+                "#2196F3" => TipoTransacao.Transferencia, // Azul
+                _ => TipoTransacao.Despesa             // Padrão
+            };
+        }
+
+        return TipoTransacao.Despesa;
     }
 }
